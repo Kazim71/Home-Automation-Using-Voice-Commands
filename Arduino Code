@@ -1,0 +1,52 @@
+const int redLed1 = 8;
+const int redLed2 = 9;
+const int blueLed1 = 10;
+const int blueLed2 = 11;
+const int fanPin = 4; // Pin connected to the transistor controlling the fan
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(redLed1, OUTPUT);
+  pinMode(redLed2, OUTPUT);
+  pinMode(blueLed1, OUTPUT);
+  pinMode(blueLed2, OUTPUT);
+  pinMode(fanPin, OUTPUT);
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    String command = Serial.readStringUntil('\n');
+    command.trim(); // Remove any trailing whitespace
+    
+    if (command == "red on") {
+      digitalWrite(redLed1, HIGH);
+      digitalWrite(redLed2, HIGH);
+    } else if (command == "red off") {
+      digitalWrite(redLed1, LOW);
+      digitalWrite(redLed2, LOW);
+    } else if (command == "blue on") {
+      digitalWrite(blueLed1, HIGH);
+      digitalWrite(blueLed2, HIGH);
+    } else if (command == "blue off") {
+      digitalWrite(blueLed1, LOW);
+      digitalWrite(blueLed2, LOW);
+    } else if (command == "fan on") {
+      digitalWrite(fanPin, HIGH);
+    } else if (command == "fan off") {
+      digitalWrite(fanPin, LOW);
+    } else if (command == "all on") {
+      digitalWrite(redLed1, HIGH);
+      digitalWrite(redLed2, HIGH);
+      digitalWrite(blueLed1, HIGH);
+      digitalWrite(blueLed2, HIGH);
+      digitalWrite(fanPin, HIGH);
+    } else if (command == "all off") {
+      digitalWrite(redLed1, LOW);
+      digitalWrite(redLed2, LOW);
+      digitalWrite(blueLed1, LOW);
+      digitalWrite(blueLed2, LOW);
+      digitalWrite(fanPin, LOW);
+    } else {
+      Serial.println("Unknown command");
+
+}
