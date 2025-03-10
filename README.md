@@ -1,89 +1,68 @@
-import serial
-import time
-import speech_recognition as sr
-import pyttsx3
+Voice-Controlled Home Automation System Using Python and Arduino
+Project Overview
+This project demonstrates how to design a Voice-Controlled Home Automation System using Python on a laptop and an Arduino Uno microcontroller. The system allows users to control home appliances such as LEDs and fans through simple voice commands. Voice recognition is handled using Python's speech_recognition library, and feedback is given through the pyttsx3 text-to-speech engine. Commands are transmitted via a serial connection to the Arduino, which executes the control logic to switch devices on and off.
 
-# Initialize the recognizer
-recognizer = sr.Recognizer()
+Hardware Requirements
+Arduino Uno Board
+USB Cable
+Red LED (2 pieces)
+Blue LED (2 pieces)
+DC Fan (controlled via transistor/mosfet circuit)
+Transistor (for fan control)
+Resistors (as per LED and transistor requirements)
+Breadboard and Jumper Wires
+Laptop/PC with Microphone
+Software Requirements
+Python 3.x
+Arduino IDE
+pyttsx3 Library (Text-to-Speech in Python)
+speech_recognition Library (Speech to Text in Python)
+pyserial Library (Communication between Python and Arduino)
+Wiring Diagram (Hardware Connection)
+Component	Arduino Pin
+Red LED 1	Digital Pin 8
+Red LED 2	Digital Pin 9
+Blue LED 1	Digital Pin 10
+Blue LED 2	Digital Pin 11
+Fan (via transistor)	Digital Pin 4
+GND (Common Ground)	GND
+Fan Control Note:
+The DC fan is connected to a transistor, which acts as a switch. The base of the transistor is connected to pin 4 through a resistor, while the collector is connected to the fan's negative terminal, and the emitter is grounded. The positive terminal of the fan is connected to the 5V supply (or external power if required).
 
-# Initialize TTS engine
-tts_engine = pyttsx3.init()
+Working Principle
+The project captures voice commands through the microphone using the Python speech_recognition library. The recognized command is processed and then sent over a serial connection to the Arduino Uno. The Arduino parses the received commands and turns on/off LEDs and the fan based on the input.
 
-# Function to recognize speech and return the text
-def recognize_speech():
-    with sr.Microphone() as source:
-        print("Listening... Please speak into the laptop's mic.")
-        audio = recognizer.listen(source)
-        
-        try:
-            print("Recognizing...")
-            text = recognizer.recognize_google(audio)
-            print(f"Recognized: {text}")
-            return text.lower()
-        except sr.UnknownValueError:
-            print("Could not understand the audio")
-        except sr.RequestError:
-            print("Could not request results; check your network connection")
-        return ""
+Supported Voice Commands
+"Red on" → Turns on both red LEDs
+"Red off" → Turns off both red LEDs
+"Blue on" → Turns on both blue LEDs
+"Blue off" → Turns off both blue LEDs
+"Fan on" → Turns on the fan
+"Fan off" → Turns off the fan
+"All on" → Turns on all LEDs and fan
+"All off" → Turns off all LEDs and fan
+"Exit program" (optional) → Stops the program (add this feature in Python)
+How to Use
+Hardware Setup:
+Connect all components to the Arduino Uno as per the wiring table above.
 
-# Function to send command to Arduino
-def send_command(command):
-    try:
-        arduino.write((command + '\n').encode())
-        print(f"Sent command: {command}")
-    except Exception as e:
-        print(f"Error: {e}")
+Upload Arduino Code:
 
-# Function to speak the command
-def speak_command(command):
-    tts_engine.say(command)
-    tts_engine.runAndWait()
+Open the Arduino IDE.
+Write or paste the Arduino code.
+Select the appropriate COM port and board (Arduino Uno).
+Upload the code to the Arduino.
+Run Python Code:
 
-# Main script
-if __name__ == "__main__":
-    try:
-        # Replace 'COM4' with the appropriate port for your system
-        arduino = serial.Serial('COM4', 9600, timeout=1)
-        time.sleep(2)  # Give time for the connection to establish
+Install the required Python libraries:
+nginx
+Copy
+Edit
+pip install pyttsx3 speechrecognition pyserial
+Connect the Arduino via USB to your laptop/PC.
+Open and run the Python script in your terminal or IDE.
+Speak one of the supported voice commands into the microphone.
+Observe the Output:
 
-        while True:
-            command = recognize_speech()
-            print(f"Command received: {command}")
-            
-            if "red on" in command:
-                send_command("red on")
-                speak_command("Turning red on")
-            elif "red off" in command:
-                send_command("red off")
-                speak_command("Turning red off")
-            elif "blue on" in command:
-                send_command("blue on")
-                speak_command("Turning blue on")
-            elif "blue off" in command:
-                send_command("blue off")
-                speak_command("Turning blue off")
-            elif "fan on" in command:
-                send_command("fan on")
-                speak_command("Turning fan on")
-            elif "fan off" in command:
-                send_command("fan off")
-                speak_command("Turning fan off")
-            elif "all on" in command:
-                send_command("all on")
-                speak_command("Turning all components on")
-            elif "all off" in command:
-                send_command("all off")
-                speak_command("Turning all components off")
-            else:
-                print("Unknown command")
-                speak_command("Unknown command")
-    except serial.SerialException as e:
-        print(f"Error opening serial port: {e}")
-    except KeyboardInterrupt:
-        print("Program terminated")
-    finally:
-        try:
-            arduino.close()
-        except:
-            pass
-
+Devices (LEDs or fan) will respond according to your voice commands.
+The Python program provides audio feedback confirming the actions.
